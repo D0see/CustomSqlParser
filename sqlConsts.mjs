@@ -24,7 +24,8 @@ export const sqlKeywords = {
     'ORDER' : 'ORDER',
     'BY' : 'BY',
     'ASC' : 'ASC',
-    'DESC' : 'DESC'
+    'DESC' : 'DESC',
+    'MULTIPLE_CONDITIONNAL_KEYWORD' : 'AND',
 }
 
 export const allColumnsSelector = '*'
@@ -35,8 +36,6 @@ export const sqlSubQuery = {
 }
 
 export const sqlSeparator = ','
-
-export const multipleConditionnalKeyword = 'AND';
 
 export const sqlTypes = {
     'NUMBER' : 'NUMBER',
@@ -90,7 +89,6 @@ export const reservedKeywords = Object.values(sqlKeywords).reduce((acc, val) => 
         acc[val] = true;
         return acc;
     }, {});
-reservedKeywords[multipleConditionnalKeyword] = true;
 
 export const nextCompositeKeyWordsWord = {
     [sqlKeywords.LEFT] : {
@@ -128,7 +126,6 @@ export const equivalentKeywords = {
 export const sqlConsts = {
     sqlKeywords,
     sqlErrors,
-    multipleConditionnalKeyword,
     sqlTypes,
     sqlOperators,
     sqlOperatorsJsEquivalent,

@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { tokenizer } from './tokenizer.js'
-import { sqlKeywords, sqlOperators, sqlSeparator, sqlSubQuery } from './sqlConsts.mjs';
-import { tokenTypes } from './tokenizerConsts';
-import { tokenizerErrors } from './tokenizerConsts';
+import { sqlKeywords, sqlOperators, sqlSeparator, sqlSubQuery } from '../sqlConsts.mjs';
+import { tokenTypes } from './tokenizerConsts.js';
+import { tokenizerErrors } from './tokenizerConsts.js';
 
 describe(tokenizer.name, () => {
   it("should tokenize keywords with token.type : keyword", () => {
@@ -169,7 +169,7 @@ describe(tokenizer.name, () => {
     expect(tokens[1].type).toBe(tokenTypes.DIRECT_VALUE)
     expect(tokens[1].valueType).toBe(tokenTypes.DATE)
   })
-  it("should tokenize strings ates with single quotes with token.type : DIRECT_VALUE and valueType : STRING", () => {
+  it("should tokenize strings with single quotes with token.type : DIRECT_VALUE and valueType : STRING", () => {
     //ARRANGE
     const query = "'this is a string'";
     //ACT
@@ -179,7 +179,7 @@ describe(tokenizer.name, () => {
     expect(tokens[0].type).toBe(tokenTypes.DIRECT_VALUE)
     expect(tokens[0].valueType).toBe(tokenTypes.STRING)
   })  
-  it("should tokenize dates without single quotes with token.type : DIRECT_VALUE and valueType : DATE'", () => {
+  it("should tokenize strings without single quotes with token.type : DIRECT_VALUE and valueType : STRING'", () => {
     //ARRANGE
     const string = "'this is a string'"
     const query = `${sqlKeywords.SELECT} ${string} ${sqlKeywords.FROM}`;
@@ -189,5 +189,43 @@ describe(tokenizer.name, () => {
     //ASSERT
     expect(tokens[1].type).toBe(tokenTypes.DIRECT_VALUE)
     expect(tokens[1].valueType).toBe(tokenTypes.STRING)
+  })
+  it("should tokenize IDENTIFIER with backticks with token.type : IDENTIFIER", () => {
+    //ARRANGE
+    const query = '`this is an identifer`';
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[0].type).toBe(tokenTypes.IDENTIFIER)
+  })  
+  it("should tokenize IDENTIFIER with backticks with token.type : IDENTIFIER", () => {
+    //ARRANGE
+    const identifier = `this is an identifer`
+    const query = `${sqlKeywords.SELECT} ${identifier} ${sqlKeywords.FROM}`;
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[1].type).toBe(tokenTypes.IDENTIFIER)
+  })
+  it("should tokenize IDENTIFIER with double quotes with token.type : IDENTIFIER", () => {
+    //ARRANGE
+    const query = '"this is an identifer"';
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[0].type).toBe(tokenTypes.IDENTIFIER)
+  })  
+  it("should tokenize IDENTIFIER with double quotes with token.type : IDENTIFIER", () => {
+    //ARRANGE
+    const identifier = "this is an identifer"
+    const query = `${sqlKeywords.SELECT} ${identifier} ${sqlKeywords.FROM}`;
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[1].type).toBe(tokenTypes.IDENTIFIER)
   })
 }) 

@@ -1,4 +1,4 @@
-import { sqlErrors } from "./sqlConsts.mjs";
+import { sqlErrors } from "../sqlConsts.mjs";
 import { tokenTypes, tokenizerErrors } from "./tokenizerConsts.js";
 import { tokenMatchers } from "./tokenizerConsts.js";
 
