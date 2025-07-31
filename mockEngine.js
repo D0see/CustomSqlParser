@@ -3,7 +3,6 @@ const rawInputExample = "select poulet from table123 on '12-12-2130' = columb (S
 
 const mockEngine = (rawInput) => {
     const tokens = tokenizer(rawInput);
-    console.log(tokens);
 }
 
 mockEngine(rawInputExample);

@@ -1,6 +1,7 @@
 //MODIFYABLE SQL KEYWORDS
 
 export const sqlKeywords = {
+    'SELECT' : 'SELECT',
     'LEFT_JOIN' : 'LEFT JOIN',
     'RIGHT_JOIN' : 'RIGHT JOIN',
     'INNER_JOIN' : 'INNER JOIN',
@@ -10,7 +11,6 @@ export const sqlKeywords = {
     'FULL_JOIN' : 'FULL JOIN',
     'FULL' : 'FULL',
     'OUTER' : 'OUTER', 
-    'SELECT' : 'SELECT',
     'LEFT' : 'LEFT',
     'RIGHT' : 'RIGHT',
     'INNER' : 'INNER',
@@ -18,11 +18,7 @@ export const sqlKeywords = {
     'ALIAS_ASSIGNEMENT' : 'AS',
     'ON' : 'ON',
     'FROM' : 'FROM',
-    'SELECT_ALL_COLUMNS' : '*',
-    'SUBQUERY_START' : '(',
-    'SUBQUERY_END' : ')',
     'WHERE' : 'WHERE',
-    'COMMA' : ',',
     'LIMIT' : 'LIMIT',
     'ORDER_BY' :'ORDER BY',
     'ORDER' : 'ORDER',
@@ -30,6 +26,15 @@ export const sqlKeywords = {
     'ASC' : 'ASC',
     'DESC' : 'DESC'
 }
+
+export const allColumnsSelector = '*'
+
+export const sqlSubQuery = {
+    'SUBQUERY_START' : '(',
+    'SUBQUERY_END' : ')'
+}
+
+export const sqlSeparator = ','
 
 export const multipleConditionnalKeyword = 'AND';
 

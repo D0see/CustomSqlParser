@@ -6,6 +6,7 @@ export const tokenizer = (input) => {
     input = input.trim();
     const tokens = [];
     cursorLoop : for (let cursorPos = 0; cursorPos < input.length; cursorPos++) {
+        if(input[cursorPos] === ' ') continue;
         const currString = input.slice(cursorPos);
         let matchedString;
         for (const tokenMatcher of tokenMatchers) {
@@ -17,9 +18,9 @@ export const tokenizer = (input) => {
 
             let cursorStart = cursorPos;
             //updates cursorPos (includes white-space)
-            cursorPos += matchedString[0].length - 1;
+            cursorPos += matchedString[0].length -1;
 
-            let matchedValue = matchedString[0].trim();
+            let matchedValue = matchedString[0];
             switch(tokenMatcher.tokenType) {
                 case tokenTypes.NUMBER :
                     matchedValue = Number(matchedValue);
