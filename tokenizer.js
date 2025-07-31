@@ -1,5 +1,5 @@
 import { sqlErrors } from "./sqlConsts.mjs";
-import { tokenTypes } from "./tokenizerConsts.js";
+import { tokenTypes, tokenizerErrors } from "./tokenizerConsts.js";
 import { tokenMatchers } from "./tokenizerConsts.js";
 
 export const tokenizer = (input) => {
@@ -33,21 +33,30 @@ export const tokenizer = (input) => {
                 matchedValue = matchedString[0].trim().slice(1, -1);
             }
 
-            tokens.push (
-                new Token(matchedValue, tokenMatcher.tokenType, cursorStart, cursorPos)
-            )
+            if ([tokenTypes.NUMBER, tokenTypes.DATE, tokenTypes.STRING].includes(tokenMatcher.tokenType)) {
+                tokens.push (
+                    {
+                        value : matchedValue, 
+                        type : tokenTypes.DIRECT_VALUE, 
+                        valueType : tokenMatcher.tokenType, 
+                        start : cursorStart, 
+                        end : cursorPos
+                    }
+                )
+            } else {
+                tokens.push (
+                    {
+                        value : matchedValue, 
+                        type : tokenMatcher.tokenType, 
+                        start : cursorStart, 
+                        end : cursorPos
+                    }
+                )
+            }
+            
             continue cursorLoop;
         }
-        throw sqlErrors.UNKNOWN_TOKEN(cursorPos, currString);
+        throw tokenizerErrors.UNKNOWN_TOKEN(cursorPos, currString);
     }
     return tokens;
-}
-
-class Token {
-    constructor(value, type, start, end) {
-        this.start = start;
-        this.end = end;
-        this.value = value;
-        this.type = type;
-    }
 }

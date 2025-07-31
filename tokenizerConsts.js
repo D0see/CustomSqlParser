@@ -4,10 +4,13 @@ export const tokenTypes = {
     'SEPARATOR' : 'SEPARATOR',
     'KEYWORD' : 'KEYWORD',
     'OPERATOR' : 'OPERATOR',
+    'IDENTIFIER' : 'IDENTIFIER',
+    'DIRECT_VALUE' : "DIRECT_VALUE",
     'NUMBER' : 'NUMBER',
     'STRING' : 'STRING',
-    'IDENTIFIER' : 'IDENTIFIER',
-    'DATE' : 'DATE'
+    'DATE' : 'DATE',
+    'SUBQUERY_START' : 'SUBQUERY_START',
+    'SUBQUERY_END' : 'SUBQUERY_END',
 }
 
 const escape = s => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -16,27 +19,33 @@ const keywordRegexCapturingGroup = Object.values(sqlKeywords).map(escape).reduce
             acc += acc ? `|${keyword}` : `(${keyword}`;
             return acc;
         },'') + ')';
-const keywordRegex = new RegExp(`^${keywordRegexCapturingGroup}(\\s|$)\\s*`, 'i');
+const keywordRegex = new RegExp(`^${keywordRegexCapturingGroup}\\s*(?=\\)||$)`, 'i');
 
 const operatorRegexCapturingGroup = Object.values(sqlOperators).reduce((acc, operator) => {
             acc += acc ? `|${operator}` : `(${operator}`;
             return acc;
         },'') + ')';
-const operatorRegex = new RegExp(`^${operatorRegexCapturingGroup}(\\s|$)\\s*`);
+const operatorRegex = new RegExp(`^${operatorRegexCapturingGroup}\\s*(?=\\)||$)`);
 
-const separatorRegex = new RegExp(`^${sqlKeywords.COMMA}(\\s|$)\\s*`);
+const separatorRegex = new RegExp(`^${sqlKeywords.COMMA}\\s*(?=\\)||$)`);
+
+const subQueryStartRegex = new RegExp(`^${escape(sqlKeywords.SUBQUERY_START)}`);
+const subQueryEndRegex = new RegExp(`^${escape(sqlKeywords.SUBQUERY_END)}`);
 
 export const tokenMatchers = [
     {tokenType : tokenTypes.SEPARATOR, regex : separatorRegex},
+    //SUBQUERY START AND END BEFORE KEYWORD
+    {tokenType : tokenTypes.SUBQUERY_START, regex : subQueryStartRegex},
+    {tokenType : tokenTypes.SUBQUERY_END, regex : subQueryEndRegex},
     {tokenType : tokenTypes.KEYWORD, regex : keywordRegex},
     {tokenType : tokenTypes.OPERATOR, regex : operatorRegex},
-    {tokenType : tokenTypes.NUMBER, regex : /^\d+[\s$]*/},
-    {tokenType : tokenTypes.IDENTIFIER, regex : /^\w+[\s$]*/},
-    {tokenType : tokenTypes.IDENTIFIER, regex : /^"[^"]*.[\s$]*/},
-    {tokenType : tokenTypes.IDENTIFIER, regex : /^`[^`]*.[\s$]*/},
-    {tokenType : tokenTypes.DATE, regex : /^'[0-9]{2}-[0-9]{2}-[0-9]{4}'[\s$]*/},
-    //date must arrive before string
-    {tokenType : tokenTypes.STRING, regex : /^'[^']*.[\s$]*/},
+    {tokenType : tokenTypes.NUMBER, regex : /^\d+\s*(?=\)||$)/},
+    {tokenType : tokenTypes.IDENTIFIER, regex : /^\w+\s*(?=\)||$)/},
+    {tokenType : tokenTypes.IDENTIFIER, regex : /^"[^"]*.\s*(?=\)||$)/},
+    {tokenType : tokenTypes.IDENTIFIER, regex : /^`[^`]*.\s*(?=\)||$)/},
+    //DATE BEFORE STRING
+    {tokenType : tokenTypes.DATE, regex : /^'[0-9]{2}-[0-9]{2}-[0-9]{4}'\s*(?=\)||$)/},
+    {tokenType : tokenTypes.STRING, regex : /^'[^']*.\s*(?=\)||$)/},
 ]
 
 export const tokenizerErrors = {
