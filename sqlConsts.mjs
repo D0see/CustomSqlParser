@@ -119,7 +119,7 @@ export const joinKeywords = {
 }
 
 export const equivalentKeywords = {
-    [sqlKeywords.JOIN] : sqlKeywords.INNER_JOIN,
+    [sqlKeywords.INNER_JOIN] : sqlKeywords.JOIN,
     [sqlKeywords.LEFT_OUTER_JOIN] : sqlKeywords.LEFT_JOIN,
     [sqlKeywords.RIGHT_OUTER_JOIN] : sqlKeywords.RIGHT_JOIN,
     [sqlKeywords.FULL_OUTER_JOIN] : sqlKeywords.FULL_JOIN,

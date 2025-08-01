@@ -41,7 +41,7 @@ const identifierBackTickRegex = new RegExp(`^\`\\w*[^\`]*\`{1}${positiveLookahea
 const dateSingleQuoteRegex = new RegExp(`^'[0-9]{2}-[0-9]{2}-[0-9]{4}'${positiveLookaheadMatchEnd}`);
 const stringRegex = new RegExp(`^'[^']*'{1}${positiveLookaheadMatchEnd}`);
 const allColumnsSelectorRegex = new RegExp(`^\\*{1}${positiveLookaheadMatchEnd}`);
-const nullRegex = new RegExp(`^${sqlNull}${positiveLookaheadMatchEnd}`);
+const nullRegex = new RegExp(`^${escape(sqlNull)}${positiveLookaheadMatchEnd}`);
 
 //DO NOT TOUCH
 
