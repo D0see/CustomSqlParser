@@ -1,8 +1,9 @@
 import { tokenizer } from './tokenizer/tokenizer.js'
-const rawInputExample = "select poulet from table123 on '12-12-2130' = columb (SELECT FROM)"
+const rawInputExample = "SELECT * FROM table1 WHERE firstName = 'John'"
 
 const mockEngine = (rawInput) => {
     const tokens = tokenizer(rawInput);
+    console.log(JSON.stringify(tokens));
 }
 
 mockEngine(rawInputExample);

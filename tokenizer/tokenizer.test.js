@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 import { tokenizer } from './tokenizer.js'
-import { sqlKeywords, sqlOperators, sqlSeparator, sqlSubQuery } from '../sqlConsts.mjs';
+import { sqlKeywords, sqlOperators, sqlSeparator, sqlSubQuery, allColumnsSelector, sqlNull } from '../sqlConsts.mjs';
 import { tokenTypes } from './tokenizerConsts.js';
 import { tokenizerErrors } from './tokenizerConsts.js';
 
-describe(tokenizer.name, () => {
+describe(tokenizer.name + ' > token types text', () => {
   it("should tokenize keywords with token.type : keyword", () => {
     //ARRANGE
     const query = `${[...Object.values(sqlKeywords)].join(' ')}`;
@@ -29,6 +29,15 @@ describe(tokenizer.name, () => {
     //ASSERT
     expect(tokens[0].type).toBe(tokenTypes.IDENTIFIER)
   }) 
+  it("should tokenize keywords in between subqueryStarters and enders with token.type : keyword", () => {
+    //ARRANGE
+    const query = `${[...Object.values(sqlKeywords)].join(`${sqlSubQuery.SUBQUERY_END}${sqlSubQuery.SUBQUERY_START}`)}`;
+    //ACT
+    const tokens = tokenizer(query);
+
+    //ASSERT
+    expect(tokens[3].type).toBe(tokenTypes.KEYWORD)
+  }) 
   it("should tokenize operators with token.type : operator", () => {
     //ARRANGE
     const query = `${[...Object.values(sqlOperators)].join(' ')}`;
@@ -44,6 +53,15 @@ describe(tokenizer.name, () => {
 
     //ASSERT
     expect(allTokensAreKeywords).toBeFalsy()
+  }) 
+  it("should tokenize operators in between subqueryStarters and enders with token.type : operator", () => {
+    //ARRANGE
+    const query = `${[...Object.values(sqlOperators)].join(`${sqlSubQuery.SUBQUERY_START}${sqlSubQuery.SUBQUERY_END}`)}`;
+    //ACT
+    const tokens = tokenizer(query);
+
+    //ASSERT
+    expect(tokens[3].type).toBe(tokenTypes.OPERATOR)
   }) 
   it("should not be able to tokenize operators without spaces between them", () => {
     //ARRANGE
@@ -227,5 +245,43 @@ describe(tokenizer.name, () => {
     
     //ASSERT
     expect(tokens[1].type).toBe(tokenTypes.IDENTIFIER)
+  })
+  it("should tokenize ALL_COLUMNS_SELECTOR with token.type : ALL_COLUMS_SELECTOR", () => {
+    //ARRANGE
+    const query = '*';
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[0].type).toBe(tokenTypes.ALL_COLUMS_SELECTOR)
+  })  
+  it("should tokenize ALL_COLUMS_SELECTOR with token.type : ALL_COLUMS_SELECTOR", () => {
+    //ARRANGE
+    const query = `${sqlKeywords.SELECT} ${allColumnsSelector} ${sqlKeywords.FROM}`;
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[1].type).toBe(tokenTypes.ALL_COLUMS_SELECTOR)
+  })
+  it("should tokenize NULL with token.type : NULL", () => {
+    //ARRANGE
+    const query = `${sqlNull}`;
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[0].type).toBe(tokenTypes.DIRECT_VALUE)
+    expect(tokens[0].valueType).toBe(tokenTypes.NULL)
+  })  
+  it("should tokenize ALL_COLUMS_SELECTOR with token.type : ALL_COLUMS_SELECTOR", () => {
+    //ARRANGE
+    const query = `${sqlKeywords.SELECT} ${sqlNull} ${sqlKeywords.FROM}`;
+    //ACT
+    const tokens = tokenizer(query);
+    
+    //ASSERT
+    expect(tokens[1].type).toBe(tokenTypes.DIRECT_VALUE)
+    expect(tokens[1].valueType).toBe(tokenTypes.NULL)
   })
 }) 

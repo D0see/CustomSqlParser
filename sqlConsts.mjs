@@ -28,14 +28,16 @@ export const sqlKeywords = {
     'MULTIPLE_CONDITIONNAL_KEYWORD' : 'AND',
 }
 
-export const allColumnsSelector = '*'
-
 export const sqlSubQuery = {
     'SUBQUERY_START' : '(',
     'SUBQUERY_END' : ')'
 }
 
-export const sqlSeparator = ','
+export const sqlNull = 'null';
+
+export const allColumnsSelector = '*'
+
+export const sqlSeparator = ',';
 
 export const sqlTypes = {
     'NUMBER' : 'NUMBER',

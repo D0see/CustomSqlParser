@@ -1,4 +1,3 @@
-import { sqlErrors } from "../sqlConsts.mjs";
 import { tokenTypes, tokenizerErrors } from "./tokenizerConsts.js";
 import { tokenMatchers } from "./tokenizerConsts.js";
 
@@ -7,7 +6,9 @@ export const tokenizer = (input) => {
     const tokens = [];
     cursorLoop : for (let cursorPos = 0; cursorPos < input.length; cursorPos++) {
         if(input[cursorPos] === ' ') continue;
+
         const currString = input.slice(cursorPos);
+
         let matchedString;
         for (const tokenMatcher of tokenMatchers) {
             matchedString =  
@@ -17,8 +18,8 @@ export const tokenizer = (input) => {
             if (!matchedString) continue;
 
             let cursorStart = cursorPos;
-            //updates cursorPos (includes white-space)
-            cursorPos += matchedString[0].length -1;
+            //updates cursorPos
+            cursorPos += matchedString[0].length - 1;
 
             let matchedValue = matchedString[0];
             switch(tokenMatcher.tokenType) {
@@ -28,32 +29,25 @@ export const tokenizer = (input) => {
                 case tokenTypes.DATE :
                     matchedValue = new Date(matchedValue);
                     break;
+                case tokenTypes.NULL :
+                    matchedValue = null;
+                    break;
             }
+
             //trimdown quoted values
             if (['"',"'","`"].includes(matchedValue[0]) && ['"',"'","`"].includes(matchedValue[matchedValue.length - 1])) {
                 matchedValue = matchedString[0].trim().slice(1, -1);
             }
 
-            if ([tokenTypes.NUMBER, tokenTypes.DATE, tokenTypes.STRING].includes(tokenMatcher.tokenType)) {
-                tokens.push (
-                    {
-                        value : matchedValue, 
-                        type : tokenTypes.DIRECT_VALUE, 
-                        valueType : tokenMatcher.tokenType, 
-                        start : cursorStart, 
-                        end : cursorPos
-                    }
-                )
-            } else {
-                tokens.push (
-                    {
-                        value : matchedValue, 
-                        type : tokenMatcher.tokenType, 
-                        start : cursorStart, 
-                        end : cursorPos
-                    }
-                )
-            }
+            tokens.push (
+                {
+                    value : matchedValue, 
+                    type : tokenMatcher.tokenType, 
+                    valueType : tokenMatcher.valueType, 
+                    start : cursorStart, 
+                    end : cursorPos + 1
+                }
+            )
             
             continue cursorLoop;
         }
